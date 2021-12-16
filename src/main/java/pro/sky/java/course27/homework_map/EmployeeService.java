@@ -3,7 +3,7 @@ package pro.sky.java.course27.homework_map;
 import java.util.Collection;
 
 public interface EmployeeService {
-    Collection<Employee> getEmployee();
+    Collection<Employee> getAllEmployee();
 
     Employee addEmployee(String lastName, String firstName);
 

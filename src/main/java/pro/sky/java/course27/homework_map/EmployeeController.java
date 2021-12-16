@@ -19,9 +19,9 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-    @GetMapping("/print")
-    public Collection<Employee> printDepartment() {
-        return employeeService.getEmployee();
+    @GetMapping("/get")
+    public Collection<Employee> getAllEmployee() {
+        return employeeService.getAllEmployee();
     }
 
     @GetMapping("/add")

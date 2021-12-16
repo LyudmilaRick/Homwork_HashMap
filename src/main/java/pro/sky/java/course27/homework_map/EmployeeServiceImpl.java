@@ -13,15 +13,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     /**
      * Converts the whole ArrayList to a single string
      */
-    Map<String, Employee> employees;
+    private final Map<String, Employee> employees;
 
     public EmployeeServiceImpl() {
         this.employees = new HashMap<>();
     }
 
     @Override
-    public Collection<Employee> getEmployee() {
-        return  employees.values();
+    public Collection<Employee> getAllEmployee() {
+        //  Возвращать следует копию, а не оригинальную коллекцию.
+        // Нас это избавляет от потенциального изменения коллекции вне ответственного сервиса.
+        //return (Collection<Employee>) Map.copyOf(employees);
+        return new ArrayList<>(employees.values());
     }
 
     /**
@@ -35,8 +38,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee addEmployee(String lastName, String firstName) {
         Employee employee = new Employee(lastName, firstName);
         // ключ - полное имя. Допущение - полных тезок нет
-        employees.put( employee.getFullName(), employee);
-        return employee;
+        if (employees.containsKey(employee.getFullName())) {
+            throw new EmployeeExistException("Employee exist!");
+        } else {
+            employees.put(employee.getFullName(), employee);
+            return employee;
+        }
     }
 
     /**
@@ -52,9 +59,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = new Employee(lastName, firstName);
         if (employees.containsKey(employee.getFullName())) {
             return employee;
-        } else {
-            throw new EmployeeNotFoundException("Employee not found...today");
         }
+        throw new EmployeeNotFoundException("Employee not found...today");
     }
 
     /**
@@ -67,11 +73,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee removeEmployee(String lastName, String firstName) {
         Employee employee = new Employee(lastName, firstName);
         if (employees.containsKey(employee.getFullName())) {
-            employees.remove(employee.getFullName());
-            return employee;
-        } else {
-            throw new EmployeeNotFoundException("Employee not found for deleting");
+            return employees.remove(employee.getFullName());
         }
+        throw new EmployeeNotFoundException("Employee not found for deleting");
     }
 }
 
